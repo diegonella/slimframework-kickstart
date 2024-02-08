@@ -5,7 +5,6 @@
 # Extends FROM debian:jessie
 FROM php:7.2-apache
 
-MAINTAINER Anthony Chambers <dockerfiles@anthonychambers.co.uk>
 
 # Set up environment variables
 ENV DISPLAY_ERRORS=1
