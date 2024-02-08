@@ -1,5 +1,5 @@
 {
-    "name": "antnee/slim-skeleton-php7",
+    "name": "diegonella/slimframework-kickstart",
     "description": "A starter application built on the Slim framework designed for PHP 7+",
     "type": "project",
     "require": {
@@ -15,8 +15,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Anthony Chambers",
-            "email": "gitlab@anthonychambers.co.uk"
+            "name": "Diego Gonella",
+            "email": "diegonella@gmail.com"
         }
     ],
     "autoload": {
