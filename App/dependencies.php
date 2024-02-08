@@ -2,6 +2,7 @@
 
 use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\AlgoliaSearch\SearchIndex;
+use DebugBar\DataCollector\PDO\PDOCollector;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
@@ -78,33 +79,34 @@ use Medoo\Medoo;
 
         // echo json_encode($s);
         // exit();
+        $algolia = SearchClient::create(
+            $s['api_id'],
+            $s['api_key']
+        );
 
-        if ($s['enabled'])
-        {
-            $algolia = SearchClient::create(
-                $s['api_id'],
-                $s['api_key']
-            );
-
-            $index = $algolia->initIndex($s['index_name']);
-            $results_array = $index->search("resma", [
-                'attributesToRetrieve' => [
-                    'producto_id',
-                    'producto_nombre',
-                    'img'
-                ],
-                'hitsPerPage' => 50
-            ]);
-
-            echo "<pre><code>";
-            print_r($results_array);
+        
             
-            echo "</pre></code>";
-            exit();
-            return $index;
-        }
+            $index = $algolia->initIndex($s['index_name']);
 
-        return null;
+            
+            // $results_array = $index->search("resma", [
+            //     'attributesToRetrieve' => [
+            //         'producto_id',
+            //         'producto_nombre',
+            //         'img'
+            //     ],
+            //     'hitsPerPage' => 50
+            // ]);
+
+            // echo "<pre><code>";
+            // print_r($results_array);
+            
+            // echo "</pre></code>";
+            // exit();
+            // return $index;
+        
+
+        return $index;
     };
 
     /**
@@ -152,5 +154,14 @@ use Medoo\Medoo;
         $v->addExtension(new TwigExt($c->get('router'), $c->get('request')->getUri()));
         return $v;
     };
+
+
+
+    $c['pdodebugbar'] = function () {
+        return new PDO('sqlite::memory:');
+    };
+    
+    $collector = new PDOCollector($c->pdodebugbar);
+    $c->debugbar->addCollector($collector);
 
 })($app);

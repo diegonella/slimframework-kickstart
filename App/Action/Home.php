@@ -30,7 +30,7 @@ final class Home
     {
         $this->logger->info("Home Action Invoked", $args);
         $referer = $this->flash->getMessage('referer')[0];
-
+        /*
         
         $dataDb = $this->medoo->select('empresas', [
             'codigo_erp',
@@ -57,8 +57,8 @@ final class Home
         
         echo "</pre>";
 
+        */
         
-        exit();
         
 
         $this->view->render($response, 'main.twig', ['referer' => $referer, 'dataDb' => $dataDb ]);

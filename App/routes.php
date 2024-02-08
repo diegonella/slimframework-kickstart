@@ -5,6 +5,7 @@ use Slim\App;
 (function (App $app) {
     $app->get('/', Action\Home::class)->setName('home');
     $app->get('/test', Action\Test::class)->setName('test');
+    $app->get('/info-php', Action\Info::class)->setName('infoPHP');
     $app->get('/csrf', Action\Csrf::class)->setName('csrf');
     $app->post('/csrf', function (\Slim\Http\Request $req, \Slim\Http\Response $res) {
         $f = $this->get('flash');

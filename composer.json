@@ -9,7 +9,8 @@
         "monolog/monolog": "^1.21",
         "slim/csrf": "^0.7.0",
         "catfan/medoo": "^2.1",
-        "algolia/algoliasearch-client-php": "^3.4"
+        "algolia/algoliasearch-client-php": "^3.4",
+        "kitchenu/slim-debugbar": "^1.1"
     },
     "license": "MIT",
     "authors": [
