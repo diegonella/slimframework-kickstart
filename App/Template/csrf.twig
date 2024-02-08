@@ -1,0 +1,47 @@
+{% extends 'main.twig' %}
+
+{% block body %}
+    <h1>PHP 7 Slim 3 Sample Application: CSRF</h1>
+    <p>I've built <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery" title="Cross Site Request Forgery">CSRF</a>
+        protection into this app using <a href="https://github.com/slimphp/slim-csrf">Slim-CSRF</a>.</p>
+
+    <p>CSRF data is available globally to all of your Twig templates thanks to four variables that you should use in
+        your forms, like this:</p>
+
+    <pre>&lt;form method="post"&gt;
+    &lt;input type="text" name="username"&gt;
+    &lt;input type="hidden" name="{{ '{{ csrfNameKey }}' }}" value="{{ '{{ csrfName }}' }}"&gt;
+    &lt;input type="hidden" name="{{ '{{ csrfValueKey }}' }}" value="{{ '{{ csrfValue }}' }}"&gt;
+    &lt;input type="submit"&gt;
+&lt;/form&gt;</pre>
+
+    <p>You don't need to do anything with the two CSRF fields to take advantage of this protection. The middleware will
+        automatically validate and reject any unauthorised requests. This will run across all appropriate routes without
+        any input from yourself. The only thing that you may want to change is what happens if there's an error.</p>
+
+    <p>Currently we have configured the applications <em>Failure Callable</em> to redirect you back to the last page that
+        you visited, using the <em>Referrer</em> middleware that is also already wired up. If you want to change that
+        functionality, simply check out <code>/App/dependencies.php</code> and edit this code:</p>
+
+    <pre>$g->setFailureCallable(function (Request $request, Response $response, callable $next) use ($f) {
+    $f->addMessage('error', 'There was an error submitting your details. Please try again');
+    $r = $f->getMessage('referer')[0] ?? '/';
+    return $response->withStatus(302)->withHeader('Location', $r);
+});</pre>
+
+    <p>Want to try it out? Try changing some of the values in this form and see what happens when you submit the form.
+        It will POST the data back to this URL, so if there's an error you should come back here (as the last successful
+        URI that you viewed).</p>
+
+    <form method="post">
+        <label for="csrfName">CSRF Token Name</label>
+        <input type="text" name="{{ csrfNameKey }}" value="{{ csrfName }}" id="csrfName">
+
+        <label for="csrfValue">CSRF Token Value</label>
+        <input type="text" name="{{ csrfValueKey }}" value="{{ csrfValue }}" id="csrfValue">
+
+        <input type="submit">
+    </form>
+
+    <p><a href="{{ path_for('home') }}">Return home</a></p>
+{% endblock %}

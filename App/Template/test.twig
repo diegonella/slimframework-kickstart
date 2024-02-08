@@ -1,0 +1,10 @@
+{% extends 'main.twig' %}
+
+{% block body %}
+    <h1>PHP 7 Slim 3 Sample Application: TEST</h1>
+    <p>This page simply shows you the internal <em title="sic">referer</em> for this page.</p>
+    <p>If the referrer isn't currently the URL that you are viewing, try reloading the page.</p>
+
+    <pre>Referrer: {{ referer }}</pre>
+    <p>Feel free to return <a href="{{ path_for('home') }}">home</a> at any time.</p>
+{% endblock %}

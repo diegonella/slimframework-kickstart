@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHP 7 Slim 3 Sample Application</title>
+    <link href="/style/style.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+{% block globalMessage %}
+    {% if successMessages %}
+        <div id="globalSuccess" class="globalMessage">{% for m in successMessages %}
+            {{ m }}<br>
+        {% endfor %}</div>
+    {% endif %}
+    {% if errorMessages %}
+        <div id="globalError" class="globalMessage">{% for m in errorMessages %}
+            {{ m }}
+        {% endfor %}</div>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <h1>PHP 7 Slim 3 Sample Application</h1>
+    <p>Welcome to the PHP 7 Slim 3 Sample Application. This project includes examples of numerous concepts and patterns,
+        including pre-configured routes and middleware, and some features that I hope will be both useful and also inspire
+        you in your next project.</p>
+
+    <h2>Routes</h2>
+    <p>There are three routes configured by default: <code>/</code>, <code>/test</code> and <code>/csrf</code></p>
+    <p><code>/</code> is this page, and <code>/test</code> allows us to demonstrate the referer middleware.</p>
+    <p><code>/csrf</code> has more information about our Cross Site Request Forgery protection implementation, as well as
+        providing a demo of how it works when something goes wrong.</p>
+    <p>Routes are configured in the <code>/App/routes.php</code> file. More on how to add a new route below.</p>
+
+    <h2>Actions</h2>
+    <p>If you come from an <em title="Model View Controller">MVC</em> framework, you will probably be expecting to see
+        an <code>/App/Controllers</code> directory. Slim doesn't enforce anything like this on you. However, where a
+        controller is usually a large class with numerous <em>action</em> methods, I prefer the smaller, single
+        action design. So in this application you will find a <code>/App/Action</code> directory which contains the
+        class which will be invoked for any given route.</p>
+    <p>Here is an example of how to configure new routes:</p>
+    <ol>
+        <li>Firstly, create your <code>Action</code> class and place it in the <code>/App/Action</code> directory. This
+            class must be placed in the <code>App\Action</code> namespace so that autoloading functions correctly.</li>
+        <li>Next, open <code>App/actions.php</code> and create a new callback in the application container:
+            <pre>$c[Action\NewAction::class] = function (c $c) {
+    return new Action\NewAction($c->get('logger'), $c->get('flash'), $c->get('view'));
+};</pre></li>
+        <li>Note the <code>Action\NewAction::class</code> as both the key in the container, as well as the name of the
+            class (you'll see that we've got a <code>use App\Action;</code> at the top of the file so that we don't
+            need to prefix every action with <code>App\</code>). You don't <em>have</em> to do it this way (you can
+            provide a simple string if you'd prefer) but I like this solution as it makes auto-completing in my IDE a
+            lot nicer, as well as providing linking to the definition. The <code>::class</code> constant always provides
+            the fully-qualified name of your class which will then make it unique in your container's index as well.</li>
+        <li>Ensure that you satisfy all of the action's dependencies. In this example we're providing a logger,
+            flash-messaging service and a view to render the page. They are already configured in the application
+            dependencies file (<code>/App/dependencies.php</code>). If your action has different dependencies then
+            provide them here and ensure that you add their factory methods in <code>/App/dependencies.php</code>.</li>
+        <li>Now open <code>/App/routes.php</code> and add the URI for your new action. For example:
+            <pre>$app->get('/new', Action\NewAction::class)->setName('new');</pre></li>
+        <li>Again, note the action class is specified here, and we've also provided the optional name, which allows us
+            to take advantage of Slim-Twig's <code>path_for()</code> function. More on that later!</li>
+    </ol>
+
+    <h2>Middleware</h2>
+    <h3>Slim Flash</h3>
+    <p>Firstly, we're using the <a href="https://github.com/slimphp/slim-flash">slim-flash</a> provider to record the
+        referrer in your pages. The <code>HTTP_REFERER</code> value can be easily spoofed, so we instead capture the
+        last page that you viewed within this application and store it in a flash message. Try going to the
+        <a href="{{ path_for('test') }}">test page</a> and seeing what the referrer says that it is, then come back to
+        the <a href="{{ path_for('home') }}">home page</a> and see if the last page you viewed was
+        <code>{{ path_for('test') }}</code></p>
+    <pre>Referrer: {{ referer }}</pre>
+    <p>Of course, this won't give you an external referrer, but hopefully you can use this in combination with the CSRF
+        middleware to secure your site and return users to the previous page if there's any problems.</p>
+
+    <h3>Slim-CSRF</h3>
+    <p>Talking of <abbr title="Cross Site Request Forgery">CSRF</abbr> we have four values automatically available in your Twig view:</p>
+    <ul>
+        <li><code>csrfNameKey</code>: The key used for the CSRF name field</li>
+        <li><code>csrfName</code>: The actual CSRF name itself</li>
+        <li><code>csrfValueKey</code>: The key used for the CSRF value field</li>
+        <li><code>csrfValue</code>: The CSRF value</li>
+    </ul>
+    <p>You use these in a form as follows:</p>
+    <pre>&lt;form method="post"&gt;
+    &lt;input type="text" name="username"&gt;
+    &lt;input type="hidden" name="{{ '{{ csrfNameKey }}' }}" value="{{ '{{ csrfName }}' }}"&gt;
+    &lt;input type="hidden" name="{{ '{{ csrfValueKey }}' }}" value="{{ '{{ csrfValue }}' }}"&gt;
+    &lt;input type="submit"&gt;
+&lt;/form&gt;</pre>
+
+    <p>Your current CSRF details are:</p>
+    <table>
+        <tr>
+            <th>{{ csrfNameKey }}</th>
+            <td>{{ csrfName }}</td>
+        </tr>
+        <tr>
+            <th>{{ csrfValueKey }}</th>
+            <td>{{ csrfValue }}</td>
+        </tr>
+    </table>
+    <p>Try reloading the page a few times and watch the second column change.</p>
+    <p>Slim-CSRF has been configured in the dependencies file to automatically redirect the user back to the referrer
+        (when one is set, otherwise the homepage) if there is a CSRF error, along with a predefined error message.</p>
+    <p>You can read more and test it out <a href="{{ path_for('csrf') }}">here</a>.</p>
+
+    <h2>Services</h2>
+    <h3>Slim-Flash</h3>
+    <p>I mentioned earlier about Slim-Flash in the middleware. Slim-Flash is available for your entire application.</p>
+    <p>Use Slim-Flash to store messages, such as validation errors in your forms. Redirect the user back to the form
+        if there's an error, retrieve the messages and send them to the view to display for the user.</p>
+
+    <h3>Monolog</h3>
+    <p>This incredibly popular <a href="https://github.com/seldaek/monolog">PHP logging library</a> is configured and
+        ready to go. Simply pass it into your methods and call the appropriate method for the level that you want to log
+        at. A UID is generated so that you can link a single request's logs together, rather than getting mixed up if
+        you have a lot of log entries for different users at once. The logging level is set through your environment
+        variables, or directly through the <code>/App/settings.php</code> file.</p>
+
+    <h3>Twig</h3>
+    <p>Specifically, Slim's <a href="https://github.com/slimphp/Twig-View">Twig-View</a>.</p>
+    <p>This excellent templating engine is ready to go, with Slim's TwigExtension included, providing useful functions
+        such as <code>{{ '{{ path_for() }}' }}</code> which allows you to generate the correct URL based on your named
+        routes. We're using it on this page to provide the links for the test and homepages above.</p>
+
+    <h2>Credits</h2>
+    <p>First of all, huge thanks to the <a href="https://github.com/orgs/slimphp/people">Slim team</a> for producing
+        this framework. Thanks also to the myriad community members who have produced the various packages used in both
+        Slim itself, but also this skeleton app.</p>
+    <p>Especially big thanks go to <a href="https://github.com/akrabat">Rob Allen, aka @akrabat</a>, who not only is a
+        member of the Slim team, but also produces excellent resources (including some of the other packages I've used
+        in this application). But most of all, thanks to Rob for his own <a href="https://github.com/akrabat/slim3-skeleton">Slim3
+        Skeleton</a> which has <strong>heavily</strong> influenced this application. I have used Rob's skeleton in a few
+        of my own projects but since I tend to always work with PHP 7 now I wanted to make some small changes that suit
+        PHP 7, as well as my own style.</p>
+{% endblock %}
+    <footer>
+        <p>&copy; {{ "now"|date("Y") }} Anthony Chambers | <a href="https://gitlab.com/Antnee/slim-skeleton-php7">Antnee/slim-skeleton-php7</a></p>
+    </footer>
+</body>
+</html>

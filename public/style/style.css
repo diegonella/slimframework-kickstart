@@ -1,0 +1,83 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:300,400,700';
+
+* {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    color: #999;
+}
+
+body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1, h2, h3, h4 {
+    color: #7a0000;
+}
+
+h1 {
+    font-size: 2.5em;
+}
+
+h2 {
+    font-size: 1.75em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+a {
+    color: #b00000;
+}
+
+code, pre {
+    background-color: #eeeeee;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    color: #333;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.8em;
+    padding: 0 5px;
+}
+
+pre {
+    overflow-x: auto;
+    padding: 10px;
+}
+
+table {
+    border: 1px solid #dddddd;
+    font-size: 0.8em;
+}
+
+th {
+    font-weight: 400;
+}
+
+th, td {
+    background-color: #eeeeee;
+}
+
+footer {
+    margin-top: 100px;
+}
+
+.globalMessage {
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+#globalError {
+    background-color: red;
+    border: 1px solid maroon;
+    color: darkred;
+}
+
+#globalSuccess {
+    background-color: lightgreen;
+    border: 1px solid darkolivegreen;
+    color: green;
+}
