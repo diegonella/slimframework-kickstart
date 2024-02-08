@@ -8,15 +8,15 @@ return [
         // Database
         'algolia' => [
             'enabled' => true,
-            'index_name' => 'empresas_lyris',
-            'api_id' => "XTOCDI8RMB",
-            'api_key' => "dacd9d3de6ca303cdf0366297c24f582",
+            'index_name' => 'my_index',
+            'api_id' => "6ca303cdf",
+            'api_key' => "dacd9d3de6c",
         ],
 
         // Database
         'db' => [
-            'dsn'  => 'mysql:dbname=' . "empresas_20240208" . ';host=' . "localhost",
-            'name' => "empresas_20240208",
+            'dsn'  => 'mysql:dbname=' . "empresas" . ';host=' . "localhost",
+            'name' => "empresas",
             'host' => "localhost",
             'port' => "3306",
             'user' => "root",
