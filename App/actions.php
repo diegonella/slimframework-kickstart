@@ -17,7 +17,7 @@ use Slim\App;
     };
 
     $c[Action\Info::class] = function (c $c) {
-        return new Action\Info($c->get('logger'), $c->get('flash'), $c->get('view'), $c->get('medoo'));
+        return new Action\Info($c->get('logger'), $c->get('flash'), $c->get('view'), $c->get('medoo'), $c->get('db'));
     };
 
     $c[Action\Csrf::class] = function (c $c) {

@@ -58,10 +58,10 @@ use Medoo\Medoo;
         $s = $c->get('settings')['db'];
         return new Medoo([
             'type' => 'mysql',
-            'host' => 'localhost',
-            'database' => 'empresas_20240208',
-            'username' => 'root',
-            'password' => 'root'
+            'host' => $s['host'],
+            'database' => $s['name'],
+            'username' => $s['user'],
+            'password' => $s['pass']
         ]);
     };
 
@@ -69,43 +69,14 @@ use Medoo\Medoo;
     $c['algolia'] = function (c $c) : SearchIndex
     {
         $s = $c->get('settings')['algolia'];
-        
-        $s = [
-            'enabled' => true,
-            'index_name' => 'empresas_lyris',
-            'api_id' => 'XTOCDI8RMB',
-            'api_key' => 'dacd9d3de6ca303cdf0366297c24f582'
-        ];
 
-        // echo json_encode($s);
-        // exit();
         $algolia = SearchClient::create(
             $s['api_id'],
             $s['api_key']
         );
 
-        
-            
-            $index = $algolia->initIndex($s['index_name']);
 
-            
-            // $results_array = $index->search("resma", [
-            //     'attributesToRetrieve' => [
-            //         'producto_id',
-            //         'producto_nombre',
-            //         'img'
-            //     ],
-            //     'hitsPerPage' => 50
-            // ]);
-
-            // echo "<pre><code>";
-            // print_r($results_array);
-            
-            // echo "</pre></code>";
-            // exit();
-            // return $index;
-        
-
+        $index = $algolia->initIndex($s['index_name']);
         return $index;
     };
 
@@ -157,11 +128,11 @@ use Medoo\Medoo;
 
 
 
-    $c['pdodebugbar'] = function () {
-        return new PDO('sqlite::memory:');
-    };
+    // $c['pdo'] = function () {
+    //     return new PDO('sqlite::memory:');
+    // };
     
-    $collector = new PDOCollector($c->pdodebugbar);
-    $c->debugbar->addCollector($collector);
+    // $collector = new PDOCollector($c->pdo);
+    // $c->debugbar->addCollector($collector);
 
 })($app);

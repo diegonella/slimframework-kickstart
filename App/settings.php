@@ -7,19 +7,20 @@ return [
 
         // Database
         'algolia' => [
-            'enabled' => getenv('ALGOLIA_ENABLED', true),
-            'api_id' => getenv('ALGOLIA_ID'),
-            'api_key' => getenv('ALGOLIA_KEY'),
+            'enabled' => true,
+            'index_name' => 'empresas_lyris',
+            'api_id' => "XTOCDI8RMB",
+            'api_key' => "dacd9d3de6ca303cdf0366297c24f582",
         ],
 
         // Database
         'db' => [
-            'dsn'  => 'mysql:dbname=' . getenv('DB_NAME') . ';host=' . getenv('DB_HOST'),
-            'name' => getenv('DB_NAME'),
-            'host' => getenv('DB_HOST'),
-            'port' => getenv('DB_PORT'),
-            'user' => getenv('DB_USER'),
-            'pass' => getenv('DB_PASS'),
+            'dsn'  => 'mysql:dbname=' . "empresas_20240208" . ';host=' . "localhost",
+            'name' => "empresas_20240208",
+            'host' => "localhost",
+            'port' => "3306",
+            'user' => "root",
+            'pass' => "root",
             'opts' => [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ],

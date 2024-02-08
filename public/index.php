@@ -28,8 +28,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
     $app = new Slim\App(require_once $src . 'settings.php');
     
-    $provider = new Kitchenu\Debugbar\ServiceProvider();
-    $provider->register($app);
+    // $provider = new Kitchenu\Debugbar\ServiceProvider();
+    // $provider->register($app);
 
     require_once $src . 'dependencies.php';
     require_once $src . 'actions.php';
