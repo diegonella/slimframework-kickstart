@@ -1,4 +1,6 @@
 <?php
+
+
 use App\Action;
 use Interop\Container\ContainerInterface as c;
 use Slim\App;
@@ -7,7 +9,7 @@ use Slim\App;
     $c = $app->getContainer();
 
     $c[Action\Home::class] = function (c $c) {
-        return new Action\Home($c->get('logger'), $c->get('flash'), $c->get('view'), $c->get('medoo'));
+        return new Action\Home($c->get('logger'), $c->get('flash'), $c->get('view'), $c->get('medoo'), $c->get('algolia'));
     };
 
     $c[Action\Test::class] = function (c $c) {

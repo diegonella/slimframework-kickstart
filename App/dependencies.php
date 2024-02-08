@@ -1,4 +1,7 @@
 <?php
+
+use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\AlgoliaSearch\SearchIndex;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Processor\UidProcessor;
@@ -59,6 +62,49 @@ use Medoo\Medoo;
             'username' => 'root',
             'password' => 'root'
         ]);
+    };
+
+
+    $c['algolia'] = function (c $c) : SearchIndex
+    {
+        $s = $c->get('settings')['algolia'];
+        
+        $s = [
+            'enabled' => true,
+            'index_name' => 'empresas_lyris',
+            'api_id' => 'XTOCDI8RMB',
+            'api_key' => 'dacd9d3de6ca303cdf0366297c24f582'
+        ];
+
+        // echo json_encode($s);
+        // exit();
+
+        if ($s['enabled'])
+        {
+            $algolia = SearchClient::create(
+                $s['api_id'],
+                $s['api_key']
+            );
+
+            $index = $algolia->initIndex($s['index_name']);
+            $results_array = $index->search("resma", [
+                'attributesToRetrieve' => [
+                    'producto_id',
+                    'producto_nombre',
+                    'img'
+                ],
+                'hitsPerPage' => 50
+            ]);
+
+            echo "<pre><code>";
+            print_r($results_array);
+            
+            echo "</pre></code>";
+            exit();
+            return $index;
+        }
+
+        return null;
     };
 
     /**

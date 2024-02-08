@@ -1,6 +1,7 @@
 <?php
 namespace App\Action;
 
+use Algolia\AlgoliaSearch\SearchIndex;
 use Medoo\Medoo;
 use Monolog\Logger;
 use Slim\Flash\Messages;
@@ -14,13 +15,15 @@ final class Home
     private $flash;
     private $view;
     private $medoo;
+    private $algolia;
 
-    public function __construct(Logger $logger, Messages $flash, Twig $view, Medoo $medoo = null)
+    public function __construct(Logger $logger, Messages $flash, Twig $view, Medoo $medoo = null, SearchIndex $algolia)
     {
         $this->logger = $logger;
         $this->flash  = $flash;
         $this->view   = $view;
         $this->medoo  = $medoo;
+        $this->algolia = $algolia;
     }
 
     public function __invoke(Request $request, Response $response, array $args) : Response
@@ -36,6 +39,26 @@ final class Home
             'id' => 2
         ]);
         
+        $results_array = $this->algolia->search("resma", [
+            'attributesToRetrieve' => [
+                'producto_id',
+                'producto_nombre',
+                'img'
+            ],
+            'hitsPerPage' => 50
+        ]);
+        
+        
+
+        echo "<pre>";
+        // echo ($results_array['nbHits']).PHP_EOL;
+        $producto_ids = array_column($results_array['hits'], 'producto_id');
+        print_r($producto_ids);
+        
+        echo "</pre>";
+
+        
+        exit();
         
 
         $this->view->render($response, 'main.twig', ['referer' => $referer, 'dataDb' => $dataDb ]);
